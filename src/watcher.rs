@@ -24,6 +24,7 @@ pub fn start(config: &ConfigFile, callback_fn: CallbackOp) -> Result<()> {
 
     println!("Started Successfully");
     let location = save_location.clone();
+    callback_fn(config, &location);
     loop {
         match rx.recv() {
             Ok(event) => {

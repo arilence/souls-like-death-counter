@@ -3,12 +3,17 @@ use std::io::prelude::*;
 use std::error::Error;
 use std::path::PathBuf;
 use serde::{Serialize, Deserialize};
+use druid::{Data};
 use crate::games::*;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, Data, PartialEq)]
 pub enum Game {
-    DS1,
-    DSR,
+    Ds1,
+    Dsr,
+    Ds2,
+    Ds2Sotfs,
+    Ds3,
+    Sekiro,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -17,6 +22,7 @@ pub struct ConfigFile {
     pub current_game: Game,
     pub dsr_config: dsr::DsrConfig,
     pub ds1_config: ds1::Ds1Config,
+    pub ds3_config: ds3::Ds3Config,
 }
 
 impl std::fmt::Display for ConfigFile {
@@ -28,9 +34,10 @@ impl std::fmt::Display for ConfigFile {
 pub fn new() -> ConfigFile {
     return ConfigFile {
         output_deaths_location: PathBuf::from("deaths.txt"),
-        current_game: Game::DSR,
+        current_game: Game::Dsr,
         dsr_config: dsr::new(),
         ds1_config: ds1::new(),
+        ds3_config: ds3::new(),
     }
 }
 
@@ -38,6 +45,9 @@ pub fn load_config() -> Result<ConfigFile, Box<dyn Error>> {
     if !PathBuf::from("config.toml").exists() {
         let new_config = new();
         save_config(&new_config);
+        // TODO return a message and close program so user can edit the file first.
+        // Custom error type will need to be made for here
+        println!("Generating Config File!");
         return Ok(new_config);
     }
 
@@ -75,7 +85,11 @@ pub fn save_config(config: &ConfigFile) {
 
 pub fn get_save_location(config: &ConfigFile) -> PathBuf {
     return match config.current_game {
-        Game::DS1 => ds1::get_save_location().unwrap(),
-        Game::DSR => dsr::get_save_location().unwrap(),
+        Game::Ds1 => ds1::get_save_location().unwrap(),
+        Game::Dsr => dsr::get_save_location().unwrap(),
+        Game::Ds2 => PathBuf::from(""),
+        Game::Ds2Sotfs => PathBuf::from(""),
+        Game::Ds3 => ds3::get_save_location().unwrap(),
+        Game::Sekiro => PathBuf::from(""),
     };
 }

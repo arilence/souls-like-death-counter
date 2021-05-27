@@ -8,7 +8,7 @@ mod deaths;
 mod watcher;
 
 fn main() {
-    println!("Souls-Like Death Counter v0.3.0");
+    println!("Souls-Like Death Counter v0.4.0");
 
     let config = config::load_config().unwrap();
     println!("Game Selected: {:?}", config.current_game);
@@ -54,13 +54,29 @@ fn callback(config: &config::ConfigFile, save_file_location: &PathBuf) {
     }
 
     let deaths = match config.current_game  {
-        config::Game::DS1 => {
+        config::Game::Ds1 => {
             let save_slot = config.ds1_config.save_slot;
             games::ds1::parse(save_slot, &file_buffer)
         },
-        config::Game::DSR => {
+        config::Game::Dsr => {
             let save_slot = config.dsr_config.save_slot;
             games::dsr::parse(save_slot, &file_buffer)
+        },
+        config::Game::Ds2 => {
+            println!("Game not supported yet.");
+            return;
+        },
+        config::Game::Ds2Sotfs => {
+            println!("Game not supported yet.");
+            return;
+        },
+        config::Game::Ds3 => {
+            let save_slot = config.ds3_config.save_slot;
+            games::ds3::parse(save_slot, &file_buffer)
+        },
+        config::Game::Sekiro => {
+            println!("Game not supported yet.");
+            return;
         },
     };
 
