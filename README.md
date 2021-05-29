@@ -4,7 +4,7 @@ Created for [SmawlGiant's Twitch Stream](https://www.twitch.tv/smawlgiant)
 
 This application aims to automatically track death counts among various souls-like games. The number of deaths is saved and continuously updated to a text file for easy access into OBS or other streaming softwares.
 
-It currently works with: DARK SOULS: Prepare To Die Edition, DARK SOULS: REMASTERED, and DARK SOULS III.
+It currently works with: DARK SOULS: Prepare To Die Edition, DARK SOULS: REMASTERED, DARK SOULS II: Scholar of the First Sin, and DARK SOULS III.
 
 
 ## Usage
