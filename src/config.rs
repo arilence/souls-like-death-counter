@@ -22,6 +22,7 @@ pub struct ConfigFile {
     pub current_game: Game,
     pub dsr_config: dsr::DsrConfig,
     pub ds1_config: ds1::Ds1Config,
+    pub ds2_config: ds2::Ds2Config,
     pub ds3_config: ds3::Ds3Config,
 }
 
@@ -37,6 +38,7 @@ pub fn new() -> ConfigFile {
         current_game: Game::Dsr,
         dsr_config: dsr::new(),
         ds1_config: ds1::new(),
+        ds2_config: ds2::new(),
         ds3_config: ds3::new(),
     }
 }
@@ -47,8 +49,7 @@ pub fn load_config() -> Result<ConfigFile, Box<dyn Error>> {
         save_config(&new_config);
         // TODO return a message and close program so user can edit the file first.
         // Custom error type will need to be made for here
-        println!("Generating Config File!");
-        return Ok(new_config);
+        panic!("Config file not found. GENERATING ONE FOR YOU!");
     }
 
     let mut file_buffer = String::new();
@@ -87,7 +88,7 @@ pub fn get_save_location(config: &ConfigFile) -> PathBuf {
     return match config.current_game {
         Game::Ds1 => ds1::get_save_location().unwrap(),
         Game::Dsr => dsr::get_save_location().unwrap(),
-        Game::Ds2 => PathBuf::from(""),
+        Game::Ds2 => ds2::get_save_location().unwrap(),
         Game::Ds2Sotfs => PathBuf::from(""),
         Game::Ds3 => ds3::get_save_location().unwrap(),
         Game::Sekiro => PathBuf::from(""),
