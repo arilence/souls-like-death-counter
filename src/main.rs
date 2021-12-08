@@ -7,8 +7,10 @@ mod games;
 mod deaths;
 mod watcher;
 
+const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
+
 fn main() {
-    println!("Souls-Like Death Counter v0.7.0");
+    println!("Souls-Like Death Counter v{}", VERSION.unwrap_or("-unknown"));
 
     let config = config::load_config().unwrap();
     println!("Game Selected: {:?}", config.current_game);
