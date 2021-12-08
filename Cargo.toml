@@ -1,6 +1,6 @@
 [package]
 name = "souls-like-death-counter"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Anthony Smith"]
 edition = "2018"
 
@@ -14,4 +14,3 @@ aes = "0.7.3"
 crossbeam-channel = "0.4.0" # notify dependency
 notify = "4.0.16"
 dirs = "3.0"
-druid = { git = "https://github.com/linebender/druid.git" }

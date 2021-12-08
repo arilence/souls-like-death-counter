@@ -8,7 +8,7 @@ mod deaths;
 mod watcher;
 
 fn main() {
-    println!("Souls-Like Death Counter v0.6.0");
+    println!("Souls-Like Death Counter v0.7.0");
 
     let config = config::load_config().unwrap();
     println!("Game Selected: {:?}", config.current_game);
@@ -75,9 +75,9 @@ fn callback(config: &config::ConfigFile, save_file_location: &PathBuf) {
             games::ds3::parse(save_slot, &file_buffer)
         },
         config::Game::Sekiro => {
-            println!("Game not supported yet.");
-            return;
-        },
+            let save_slot = config.sekiro_config.save_slot;
+            games::sekiro::parse(save_slot, &file_buffer)
+        }
     };
 
     deaths::save(&config.output_deaths_location, deaths, 0);

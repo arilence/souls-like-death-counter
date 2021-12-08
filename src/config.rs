@@ -3,10 +3,9 @@ use std::io::prelude::*;
 use std::error::Error;
 use std::path::PathBuf;
 use serde::{Serialize, Deserialize};
-use druid::{Data};
 use crate::games::*;
 
-#[derive(Serialize, Deserialize, Debug, Clone, Data, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum Game {
     Ds1,
     Dsr,
@@ -24,6 +23,7 @@ pub struct ConfigFile {
     pub ds1_config: ds1::Ds1Config,
     pub ds2_config: ds2::Ds2Config,
     pub ds3_config: ds3::Ds3Config,
+    pub sekiro_config: sekiro::SekiroConfig,
 }
 
 impl std::fmt::Display for ConfigFile {
@@ -40,6 +40,7 @@ pub fn new() -> ConfigFile {
         ds1_config: ds1::new(),
         ds2_config: ds2::new(),
         ds3_config: ds3::new(),
+        sekiro_config: sekiro::new(),
     }
 }
 
@@ -91,6 +92,6 @@ pub fn get_save_location(config: &ConfigFile) -> PathBuf {
         Game::Ds2 => ds2::get_save_location().unwrap(),
         Game::Ds2Sotfs => PathBuf::from(""),
         Game::Ds3 => ds3::get_save_location().unwrap(),
-        Game::Sekiro => PathBuf::from(""),
+        Game::Sekiro => sekiro::get_save_location().unwrap(),
     };
 }
