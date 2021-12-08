@@ -19,7 +19,7 @@ pub fn start(config: &ConfigFile, callback_fn: CallbackOp) -> Result<()> {
             println!("If you have already created a character and see this error, something went wrong.");
             return Ok(());
         },
-        Ok(_) => (), 
+        Ok(_) => (),
     };
 
     println!("Started Successfully");

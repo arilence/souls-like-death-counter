@@ -82,18 +82,18 @@ pub fn get_save_location() -> Result<PathBuf, Box<dyn Error>> {
     let mut save_location = dirs::document_dir().unwrap();
     save_location.push(r"NBGI/DARK SOULS REMASTERED");
 
-    // The save files are within a child folder that is named with the users unique ID or username. 
+    // The save files are within a child folder that is named with the users unique ID or username.
     // e.g. ~/Documents/NBDI/DARK SOULS REMASTERED/[12345678]/DRAKS0005.sl2
     // Since I haven't figured out if there is a way to get this ID, we just take the first child folder.
     // TODO: Let the user view and select a user folder if there is more than one.
     return match std::fs::read_dir(&save_location) {
-        Err(err) => { 
+        Err(err) => {
             println!("ERROR: Save File Not Found.");
             println!("Please open character creation first before starting this program.");
             println!("If you have already created a character and see this error, something went wrong.");
             Err(Box::new(err))
         },
-        Ok(paths) => { 
+        Ok(paths) => {
             for path in paths {
                 // Let's hope there is only one directory in here.
                 save_location.push(path.unwrap().path());

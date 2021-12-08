@@ -16,7 +16,7 @@ fn main() {
     println!("Game Selected: {:?}", config.current_game);
 
     // Not using a special thread shutdown communication channel here. Just praying it gets killed when the parent process ends.
-    // Gist: I don't know enough about threads. 
+    // Gist: I don't know enough about threads.
     thread::spawn(move || {
         watcher::start(&config, callback).unwrap();
     });
