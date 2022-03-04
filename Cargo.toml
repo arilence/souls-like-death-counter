@@ -8,9 +8,10 @@ edition = "2018"
 
 [dependencies]
 aes = "0.7.3"
+async-std = "1.10.0"
 block-modes = "0.8.1" # aes dependency
 crossbeam-channel = "0.4.0" # notify dependency
 dirs = "3.0"
-notify = "4.0.16"
+notify = "5.0.0-pre.13"
 serde = { version = "1.0", features = ["derive"] } # toml dependency
 toml = "0.5"

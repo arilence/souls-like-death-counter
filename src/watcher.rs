@@ -1,45 +1,39 @@
-use notify::{RecommendedWatcher, Watcher, RecursiveMode, DebouncedEvent, Result};
-use std::sync::mpsc::channel;
-use std::time::Duration;
+use async_std::{channel::{Receiver, bounded}, task};
+use notify::{RecursiveMode, RecommendedWatcher, Event, Watcher, Config};
+// notify::watcher.watch() wants std::PathBuf and I haven't figured out how to use
+// async_std::PathBuf with it.
 use std::path::PathBuf;
-use crate::config;
-use crate::config::{ConfigFile};
 
-type CallbackOp = fn(config: &ConfigFile, save_location: &PathBuf);
+pub async fn watch(paths: Vec<PathBuf>) -> notify::Result<()> {
+    let (mut watcher, rx) = generate_watcher()?;
 
-pub fn start(config: &ConfigFile, callback_fn: CallbackOp) -> Result<()> {
-    let save_location = config::get_save_location(config);
+    // Canonicalize paths before adding them to the watch list,
+    // Honestly not sure if that's needed, but I like absolute paths.
+    for path in paths.into_iter() {
+        if let Ok(canonical_path) = path.canonicalize() {
+            watcher.watch(&canonical_path, RecursiveMode::NonRecursive)?;
+        }
+    }
 
-    let (tx, rx) = channel();
-    let mut watcher: RecommendedWatcher = Watcher::new(tx.clone(), Duration::from_secs(2))?;
-    match watcher.watch(&save_location, RecursiveMode::NonRecursive) {
-        Err(_) => {
-            println!("ERROR: Save File Not Found.");
-            println!("Please open character creation first before starting this program.");
-            println!("If you have already created a character and see this error, something went wrong.");
-            return Ok(());
-        },
-        Ok(_) => (),
-    };
-
-    println!("Started Successfully");
-    let location = save_location.clone();
-    callback_fn(config, &location);
-    loop {
-        match rx.recv() {
-            Ok(event) => {
-                match event {
-                    DebouncedEvent::Write(_) => {
-                        callback_fn(config, &location);
-                    },
-                    _ => (),
-                }
-            },
-            Err(e) => {
-                println!("ERROR: Watching file failed: {:?}", e);
-                break;
-            },
+    while let Ok(res) = rx.recv().await {
+        match res {
+            Ok(event) => println!("changed: {:?}", event),
+            Err(e) => println!("watch error: {:?}", e),
         }
     }
     Ok(())
+}
+
+fn generate_watcher() -> notify::Result<(RecommendedWatcher, Receiver<notify::Result<Event>>)> {
+    let (tx, rx) = bounded(1);
+
+    // notify recommends using RecommendedWatcher to automatically pick the best
+    // implementation for the platform, even though we're only building for
+    // windows.
+    let watcher = RecommendedWatcher::new(move |res| {
+        task::block_on(async {
+            tx.send(res).await.unwrap();
+        })
+    })?;
+    Ok((watcher, rx))
 }

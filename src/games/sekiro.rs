@@ -8,12 +8,6 @@ pub struct SekiroConfig {
     pub save_slot: usize,
 }
 
-impl std::fmt::Display for SekiroConfig {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "SekiroConfig Error")
-    }
-}
-
 pub fn new() -> SekiroConfig {
     return SekiroConfig {
         override_file_location: String::from(""),
